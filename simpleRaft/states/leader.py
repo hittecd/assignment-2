@@ -1,10 +1,9 @@
 from collections import defaultdict
 from .state import State
-from ..messages.append_entries import AppendEntriesMessage
+from simpleRaft.messages.append_entries import AppendEntriesMessage
 
 
 class Leader(State):
-
     def __init__(self):
         self._nextIndexes = defaultdict(int)
         self._matchIndex = defaultdict(int)
@@ -19,7 +18,7 @@ class Leader(State):
 
     def on_response_received(self, message):
         # Was the last AppendEntries good?
-        if(not message.data["response"]):
+        if (not message.data["response"]):
             # No, so lets back up the log for this node
             self._nextIndexes[message.sender] -= 1
 
@@ -47,7 +46,7 @@ class Leader(State):
             self._nextIndexes[message.sender] += 1
 
             # Are they caught up?
-            if(self._nextIndexes[message.sender] > self._server._lastLogIndex):
+            if (self._nextIndexes[message.sender] > self._server._lastLogIndex):
                 self._nextIndexes[message.sender] = self._server._lastLogIndex
 
         return self, None

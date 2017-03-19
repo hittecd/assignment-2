@@ -1,10 +1,9 @@
-from .voter import Voter
-from .leader import Leader
-from ..messages.request_vote import RequestVoteMessage
+from voter import Voter
+from leader import Leader
+from simpleRaft.messages.request_vote import RequestVoteMessage
 
 
 class Candidate(Voter):
-
     def set_server(self, server):
         self._server = server
         self._votes = {}
@@ -17,7 +16,7 @@ class Candidate(Voter):
         if message.sender not in self._votes:
             self._votes[message.sender] = message
 
-            if(len(self._votes.keys()) > (self._server._total_nodes - 1) / 2):
+            if (len(self._votes.keys()) > (self._server._total_nodes - 1) / 2):
                 leader = Leader()
                 leader.set_server(self._server)
 

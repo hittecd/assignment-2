@@ -1,8 +1,7 @@
-from .base import BaseMessage
+from base import BaseMessage
 
 
 class RequestVoteMessage(BaseMessage):
-
     _type = BaseMessage.RequestVote
 
     def __init__(self, sender, receiver, term, data):
@@ -10,7 +9,6 @@ class RequestVoteMessage(BaseMessage):
 
 
 class RequestVoteResponseMessage(BaseMessage):
-
     _type = BaseMessage.RequestVoteResponse
 
     def __init__(self, sender, receiver, term, data):
