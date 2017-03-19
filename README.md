@@ -34,3 +34,6 @@ References:
 ==========
 * [In Search of an Understandable Consensus Algorithm](https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf)
 * [Raft Lecture](http://www.youtube.com/watch?v=YbZ3zDzDnrw)
+
+
+
