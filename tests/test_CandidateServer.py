@@ -1,12 +1,10 @@
 import unittest
 
-from simpleRaft.boards.memory_board import MemoryBoard
-from simpleRaft.messages.append_entries import AppendEntriesMessage
-from simpleRaft.messages.request_vote import RequestVoteMessage
-from simpleRaft.servers.server import Server
-from simpleRaft.states.follower import Follower
-from simpleRaft.states.candidate import Candidate
-from simpleRaft.states.leader import Leader
+from ..boards.memory_board import MemoryBoard
+from ..servers.server import Server
+from ..states.follower import Follower
+from ..states.candidate import Candidate
+from ..states.leader import Leader
 
 
 class TestCandidateServer(unittest.TestCase):
@@ -137,3 +135,7 @@ class TestCandidateServer(unittest.TestCase):
 
     def test_multiple_candidates_fail_to_win_so_resend_requests(self):
         pass
+
+
+if __name__ == "__main__":
+    unittest.main()

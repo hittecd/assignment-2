@@ -1,7 +1,7 @@
 import unittest
 
-from simpleRaft.boards.memory_board import MemoryBoard
-from simpleRaft.messages.base import BaseMessage
+from ..boards.memory_board import MemoryBoard
+from ..messages.base import BaseMessage
 
 
 class TestMemoryBoard(unittest.TestCase):
@@ -22,3 +22,7 @@ class TestMemoryBoard(unittest.TestCase):
         self.board.post_message(msg2)
 
         self.assertEquals(msg2, self.board.get_message())
+
+
+if __name__ == "__main__":
+    unittest.main()

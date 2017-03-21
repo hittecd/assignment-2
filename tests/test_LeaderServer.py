@@ -1,12 +1,10 @@
 import unittest
 
-from simpleRaft.boards.memory_board import MemoryBoard
-from simpleRaft.messages.append_entries import AppendEntriesMessage
-from simpleRaft.messages.request_vote import RequestVoteMessage
-from simpleRaft.servers.server import Server
-from simpleRaft.states.follower import Follower
-from simpleRaft.states.candidate import Candidate
-from simpleRaft.states.leader import Leader
+from ..boards.memory_board import MemoryBoard
+from ..messages.append_entries import AppendEntriesMessage
+from ..servers.server import Server
+from ..states.follower import Follower
+from ..states.leader import Leader
 
 
 class TestLeaderServer(unittest.TestCase):
@@ -79,3 +77,7 @@ class TestLeaderServer(unittest.TestCase):
 
         for i in self.leader._neighbors:
             self.assertEquals([{"term": 1, "value": 100}], i._log)
+
+
+if __name__ == "__main__":
+    unittest.main()

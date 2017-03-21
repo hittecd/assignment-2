@@ -1,8 +1,8 @@
 import time
 import random
 
-from simpleRaft.messages.base import BaseMessage
-from simpleRaft.messages.response import ResponseMessage
+from ..messages.base import BaseMessage
+from ..messages.response import ResponseMessage
 
 
 class State(object):
