@@ -1,8 +1,8 @@
 import unittest
 
-from ..boards.memory_board import MemoryBoard
+from server.boards.memory_board import MemoryBoard
+from server.server import Server
 from ..messages.append_entries import AppendEntriesMessage
-from ..servers.server import Server
 from ..states.follower import Follower
 from ..states.leader import Leader
 

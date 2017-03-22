@@ -1,20 +1,11 @@
-from boards.memory_board import MemoryBoard
-from states.candidate import Candidate
-from states.follower import Follower
-from states.leader import Leader
-from servers.server import Server
+import sys
+
+from server.server import Server
 
 
 def main():
-    board = MemoryBoard()
-    state = Follower()
-    oserver = Server(0, state, [], board, [])
-
-    board = MemoryBoard()
-    state = Candidate()
-    server = Server(1, state, [], board, [oserver])
-
-    oserver._neighbors.append(server)
+    i = int(sys.argv[1])
+    Server(i)
 
 
 if __name__ == "__main__":

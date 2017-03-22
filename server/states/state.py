@@ -1,8 +1,8 @@
-import time
 import random
+import time
 
-from ..messages.base import BaseMessage
-from ..messages.response import ResponseMessage
+from server.messages import BaseMessage
+from server.messages import ResponseMessage
 
 
 class State(object):

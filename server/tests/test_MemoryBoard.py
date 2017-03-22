@@ -1,6 +1,6 @@
 import unittest
 
-from ..boards.memory_board import MemoryBoard
+from server.boards.memory_board import MemoryBoard
 from ..messages.base import BaseMessage
 
 

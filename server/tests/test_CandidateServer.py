@@ -1,9 +1,9 @@
 import unittest
 
-from ..boards.memory_board import MemoryBoard
-from ..servers.server import Server
-from ..states.follower import Follower
+from server.boards.memory_board import MemoryBoard
+from server.server import Server
 from ..states.candidate import Candidate
+from ..states.follower import Follower
 from ..states.leader import Leader
 
 
