@@ -1,6 +1,6 @@
 import socket
 
-from ..messages.client_request import ClientRequestMessage
+from server.messages.client_request import ClientRequestMessage
 
 
 Q_CREATE_COMMAND_STR = 'qcreate'
@@ -21,13 +21,13 @@ class FTQueueClient(object):
         while True:
             user_input = raw_input('> ')
 
-            command, err_msg = self.parse_client_request(user_input)
+            client_request, err_msg = self.parse_client_request(user_input)
 
-            if command == None:
+            if client_request == None:
                 print "ERROR - " + err_msg
 
             else:
-                server_addr = (command._ip_addr, command._port)
+                server_addr = (client_request._dst_ip_addr, client_request._dst_port)
 
                 try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,7 +37,7 @@ class FTQueueClient(object):
                     sock.close()
                     continue
 
-                sock.sendall(command.get_request())
+                sock.sendall(client_request.to_string())
 
                 response = sock.recv(2048)
                 print response
@@ -102,9 +102,9 @@ class FTQueueClient(object):
             return True
         elif command_str == Q_ID_COMMAND_STR and len(args_list) == 1:
             return True
-        elif command_str == Q_POP_COMMAND_STR and len(args_list) == 2:
+        elif command_str == Q_PUSH_COMMAND_STR and len(args_list) == 2:
             return True
-        elif command_str == Q_PUSH_COMMAND_STR and len(args_list) == 1:
+        elif command_str == Q_POP_COMMAND_STR and len(args_list) == 1:
             return True
         elif command_str == Q_TOP_COMMAND_STR and len(args_list) == 1:
             return True
