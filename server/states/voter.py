@@ -1,5 +1,5 @@
 from server.messages.request_vote import RequestVoteResponseMessage
-from .state import State
+from state import State
 
 
 class Voter(State):

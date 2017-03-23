@@ -1,5 +1,6 @@
 import socket
 
+from ..server.messages.client_request import ClientRequestMessage
 
 Q_CREATE_COMMAND_STR = 'qcreate'
 Q_ID_COMMAND_STR = 'qid'
@@ -9,7 +10,7 @@ Q_TOP_COMMAND_STR = 'qtop'
 Q_SIZE_COMMAND_STR = 'qsize'
 
 
-class FTQueueClient:
+class FTQueueClient(object):
 
     def run(self):
         print "Welcome to the FTQClient. You may being entering commands below."
@@ -73,7 +74,7 @@ class FTQueueClient:
         if not self.validate_command_token(command_str, args_list):
             return None, "invalid command: {0} {1}".format(command_str, args_list)
 
-        return self.Command(ip_addr, port, command_str, args_list), None
+        return self.ClientCommand(ip_addr, port, command_str, args_list), None
 
     def validate_ip_token(self, ip_addr):
         if ip_addr == '':
@@ -111,19 +112,15 @@ class FTQueueClient:
         else:
             return False
 
-    class Command:
+    class ClientCommand(object):
         def __init__(self, ip_addr, port, command, args_list):
             self._ip_addr = ip_addr
             self._port = port
             self._command = command
             self._args = args_list
 
-        def get_request(self):
-            arg_string = ""
-            for arg in self._args:
-                arg_string += (str(arg) + ' ')
-
-            return "{0} {1}".format(self._command, self._args)
+        def get_client_request(self):
+            return ClientRequestMessage.from_client_command(self)
 
 
 if __name__ == "__main__":

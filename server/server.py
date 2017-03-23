@@ -1,6 +1,7 @@
 import socket
 
-from server.states.follower import Follower
+from states.follower import Follower
+from ftqueue.ftqueue import FTQueue
 
 
 SERVER_DIRECTORY = {0: ('SERVER-0', 8000, '127.0.0.1'),
@@ -36,22 +37,27 @@ class Server(object):
         self._lastLogIndex = 0
         self._lastLogTerm = None
 
+        self._state = None
+
+        self._ftqueue = FTQueue()
+
+    def run(self):
         self._state = Follower()
         self._state.set_server(self)
 
-        self._queue_table = {}
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.bind((self._ip_addr, self._listen_port))
 
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._sock.bind((self._ip_addr, self._listen_port))
-
-        self._sock.listen(4)
+        sock.listen(4)
         while True:
-            conn, addr = self._sock.accept()
+            conn, addr = sock.accept()  # spin off thread?
             print "CONNECTION ADDRESS: {0}".format(addr)
 
             message = conn.recv(2048)
 
             # process message here; either CLIENT, APPEND_ENTRIES, RESPONSE, or REQUEST_VOTE
+
 
             self.on_message(message)
 
