@@ -41,7 +41,7 @@ class AppendEntriesMessage(BaseRaftMessage):
         return AppendEntriesMessage(sender, receiver, term, data)
 
     @staticmethod
-    def is_client_message(message):
+    def is_append_entries_message(message):
         json_data = json.load(message)
 
         msg_type = json_data[MSG_TYPE_KEY]

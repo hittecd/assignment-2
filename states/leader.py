@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from ..messages.append_entries import AppendEntriesMessage
+from messages import AppendEntriesMessage
 from state import State
 
 

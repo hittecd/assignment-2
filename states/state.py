@@ -1,8 +1,12 @@
 import random
 import time
 
-from ..messages.base_raft import BaseRaftMessage
-from ..messages.response import ResponseMessage
+from messages.base_raft import BaseRaftMessage
+from messages.response import ResponseMessage
+from messages.client_request import ClientRequestMessage
+from messages.append_entries import AppendEntriesMessage
+from messages.request_vote import RequestVoteMessage
+from messages.request_vote import RequestVoteResponseMessage
 
 
 class State(object):
@@ -15,7 +19,9 @@ class State(object):
         that this state reacts to.
 
         """
-        _type = message.type
+        if ClientRequestMessage.is_client_message(message):
+            message = ClientRequestMessage.from_message_string(message)
+            print "NOT SURE WHAT TO DO NOW..."
 
         if (message.term > self._server._currentTerm):
             self._server._currentTerm = message.term
@@ -25,14 +31,24 @@ class State(object):
             self._send_response_message(message, yes=False)
             return self, None
 
-        if (_type == BaseRaftMessage.AppendEntries):
+        if AppendEntriesMessage.is_append_entries_message():
+            message = AppendEntriesMessage.from_message_string(message)
+
             return self.on_append_entries(message)
-        elif (_type == BaseRaftMessage.RequestVote):
-            a = self.on_vote_request(message)
-            return a
-        elif (_type == BaseRaftMessage.RequestVoteResponse):
+
+        elif RequestVoteMessage.is_request_vote_message(message):
+            message = RequestVoteMessage.from_message_string(message)
+
+            return self.on_vote_request(message)
+
+        elif RequestVoteResponseMessage.is_request_vote_response_message(message):
+            message = RequestVoteResponseMessage.from_message_string(message)
+
             return self.on_vote_received(message)
-        elif (_type == BaseRaftMessage.Response):
+
+        elif ResponseMessage.is_response_message(message):
+            message = ResponseMessage.from_message_string(message)
+
             return self.on_response_received(message)
 
     def on_leader_timeout(self, message):

@@ -31,18 +31,18 @@ class ClientRequestMessage(BaseMessage):
         json_data = json.dumps(
             {
                 MSG_TYPE_KEY: CLIENT_REQUEST_MESSAGE_TYPE,
-                SRC_IP_ADDR_KEY: self._src_ip_addr,
-                SRC_PORT_KEY: self._src_port,
+                DST_IP_ADDR_KEY: self._dst_ip_addr,
+                DST_PORT_KEY: self._dst_port,
                 COMMAND_KEY: self._command,
                 ARGS_LIST_KEY: self._args_list
            }
         )
 
-        return "{0} {1}".format(CLIENT_REQUEST_MESSAGE_TYPE, json_data)
+        return json_data
 
     @staticmethod
     def from_message_string(message):
-        json_data = json.load(message)
+        json_data = json.loads(message)
 
         dst_ip_addr = json_data[DST_IP_ADDR_KEY]
         dst_port = json_data[DST_PORT_KEY]
@@ -53,7 +53,7 @@ class ClientRequestMessage(BaseMessage):
 
     @staticmethod
     def is_client_message(message):
-        json_data = json.load(message)
+        json_data = json.loads(message)
 
         msg_type = json_data[MSG_TYPE_KEY]
 

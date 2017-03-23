@@ -1,14 +1,11 @@
+import argparse
 import socket
 
 from states.follower import Follower
 from ftqueue.ftqueue import FTQueue
 
 
-SERVER_DIRECTORY = {0: ('SERVER-0', 8000, '127.0.0.1'),
-                    1: ('SERVER-1', 8001, '127.0.0.1'),
-                    2: ('SERVER-2', 8002, '127.0.0.1'),
-                    3: ('SERVER-3', 8003, '127.0.0.1'),
-                    4: ('SERVER-4', 8004, '127.0.0.1')}
+SERVER_DIRECTORY = {}
 
 SERVER_INFO_NAME_INDEX = 0
 SERVER_INFO_LISTEN_PORT_INDEX = 1
@@ -21,7 +18,7 @@ class Server(object):
 
         self._name = server_info[SERVER_INFO_NAME_INDEX]
         self._ip_addr = server_info[SERVER_INFO_IP_ADDR_INDEX]
-        self._listen_port = server_info[SERVER_INFO_LISTEN_PORT_INDEX]
+        self._listen_port = int(server_info[SERVER_INFO_LISTEN_PORT_INDEX])
 
         self._neighbors = []
         # for server_info in SERVER_DIRECTORY.values():
@@ -78,6 +75,31 @@ class Server(object):
         state, response = self._state.on_message(message)
 
         self._state = state
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--server_index', type=int, required=True)
+
+    args = parser.parse_args()
+
+    parse_config()
+
+    s = Server(args.server_index)
+    s.run()
+
+
+def parse_config():
+    config_file = file('server.config', 'r')
+
+    id = 0
+    for server_info in config_file.readlines():
+        SERVER_DIRECTORY[id] = server_info.split()
+        id += 1
+
+
+if __name__ == "__main__":
+    main()
 
 
 # class ZeroMQServer(Server):

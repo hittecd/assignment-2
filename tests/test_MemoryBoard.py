@@ -1,7 +1,8 @@
 import unittest
 
 from server.boards.memory_board import MemoryBoard
-from ..messages.base_raft import BaseRaftMessage
+
+from messages import BaseRaftMessage
 
 
 class TestMemoryBoard(unittest.TestCase):

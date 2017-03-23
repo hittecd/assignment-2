@@ -1,10 +1,11 @@
 import unittest
 
-from server.boards.memory_board import MemoryBoard
-from server.server import Server
 from ..states.candidate import Candidate
 from ..states.follower import Follower
 from ..states.leader import Leader
+
+from boards.memory_board import MemoryBoard
+from server import Server
 
 
 class TestCandidateServer(unittest.TestCase):

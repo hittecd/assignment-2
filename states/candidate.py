@@ -1,5 +1,5 @@
 from leader import Leader
-from server.messages.request_vote import RequestVoteMessage
+from messages import RequestVoteMessage
 from voter import Voter
 
 
