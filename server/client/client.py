@@ -1,6 +1,6 @@
 import socket
 
-from server.messages.client_request import ClientRequestMessage
+from ..messages.client_request import ClientRequestMessage
 
 
 Q_CREATE_COMMAND_STR = 'qcreate'

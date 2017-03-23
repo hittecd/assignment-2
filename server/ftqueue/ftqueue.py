@@ -1,3 +1,11 @@
+Q_CREATE_COMMAND_STR = 'qcreate'
+Q_ID_COMMAND_STR = 'qid'
+Q_POP_COMMAND_STR = 'qpop'
+Q_PUSH_COMMAND_STR = 'qpush'
+Q_TOP_COMMAND_STR = 'qtop'
+Q_SIZE_COMMAND_STR = 'qsize'
+
+
 class FTQueue(object):
     def __init__(self):
         self._queue_count = -1
@@ -44,4 +52,36 @@ class FTQueue(object):
         return len(queue)
 
     def execute_command(self, command):
-        pass
+        func = command._func
+        args_list = command._args_list
+
+        if func == Q_CREATE_COMMAND_STR:
+            label = args_list[0]
+
+            return self.q_create(label)
+
+        elif func == Q_ID_COMMAND_STR:
+            label = args_list[0]
+
+            return self.q_id(label)
+
+        elif func == Q_PUSH_COMMAND_STR:
+            queue_id = args_list[0]
+            item = args_list[1]
+
+            self.q_push(queue_id, item)
+
+        elif func == Q_POP_COMMAND_STR:
+            queue_id = args_list[0]
+
+            return self.q_pop(queue_id)
+
+        elif func == Q_TOP_COMMAND_STR:
+            queue_id = args_list[0]
+
+            return self.q_top(queue_id)
+
+        elif func == Q_SIZE_COMMAND_STR:
+            queue_id = args_list[0]
+
+            return self.q_size(queue_id)
