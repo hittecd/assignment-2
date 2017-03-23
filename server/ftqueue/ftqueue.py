@@ -4,20 +4,20 @@ class FTQueue(object):
         self._queue_id_index = {}
         self._queue_table = {}
 
-    def qCreate(self, label):
+    def q_create(self, label):
         self._queue_count += 1
         self._queue_id_index[label] = self._queue_count
         self._queue_table[self._queue_count] = []
 
-    def qId(self, label):
+    def q_id(self, label):
         return self._queue_id_index[label]
 
-    def qPush(self, queue_id, item):
+    def q_push(self, queue_id, item):
         if queue_id in self._queue_table:
             queue = self._queue_table[queue_id]
             queue.append(item)
 
-    def qPop(self, queue_id):
+    def q_pop(self, queue_id):
         if queue_id not in self._queue_table:
             return
 
@@ -26,7 +26,7 @@ class FTQueue(object):
         if len(queue) > 0:
             return list.pop()
 
-    def qTop(self, queue_id):
+    def q_top(self, queue_id):
         if queue_id not in self._queue_table:
             return
 
@@ -35,10 +35,13 @@ class FTQueue(object):
         if len(queue) > 0:
             return list[len(list) - 1]
 
-    def qSize(self, queue_id):
+    def q_size(self, queue_id):
         if queue_id not in self._queue_table:
             return
 
         queue = self._queue_table[queue_id]
 
         return len(queue)
+
+    def execute_command(self, command):
+        pass

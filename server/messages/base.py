@@ -1,40 +1,29 @@
-import time
+from client_request import ClientRequestMessage
+from request_vote import RequestVoteMessage
+from request_vote import RequestVoteResponseMessage
+from response import ResponseMessage
+from append_entries import AppendEntriesMessage
+
+
+MSG_TYPE_KEY = "msg_type"
 
 
 class BaseMessage(object):
-    AppendEntries = 0
-    RequestVote = 1
-    RequestVoteResponse = 2
-    Response = 3
 
-    def __init__(self, sender, receiver, term, data):
-        self._timestamp = int(time.time())
+    @staticmethod
+    def from_message_string(message):
 
-        self._sender = sender
-        self._receiver = receiver
-        self._data = data
-        self._term = term
+        if ClientRequestMessage.is_client_message(message):
+            return ClientRequestMessage.from_message_string(message)
 
-    @property
-    def receiver(self):
-        return self._receiver
+        elif RequestVoteMessage.is_request_vote_message(message):
+            return RequestVoteMessage.from_message_string(message)
 
-    @property
-    def sender(self):
-        return self._sender
+        elif RequestVoteResponseMessage.is_request_vote_response_message(message):
+            return RequestVoteResponseMessage.from_message_string(message)
 
-    @property
-    def data(self):
-        return self._data
+        elif ResponseMessage.is_response_message(message):
+            return ResponseMessage.from_message_string(message)
 
-    @property
-    def timestamp(self):
-        return self._timestamp
-
-    @property
-    def term(self):
-        return self._term
-
-    @property
-    def type(self):
-        return self._type
+        elif AppendEntriesMessage.is_append_entries_message(message):
+            return AppendEntriesMessage.from_message_string(message)

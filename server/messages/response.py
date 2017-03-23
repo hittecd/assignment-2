@@ -1,8 +1,6 @@
-from base import BaseMessage
+from base_raft import BaseRaftMessage
 
 
-class ResponseMessage(BaseMessage):
-    _type = BaseMessage.Response
-
+class ResponseMessage(BaseRaftMessage):
     def __init__(self, sender, receiver, term, data):
-        BaseMessage.__init__(self, sender, receiver, term, data)
+        BaseRaftMessage.__init__(self, sender, receiver, term, data)

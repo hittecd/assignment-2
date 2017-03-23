@@ -1,45 +1,57 @@
-CLIENT_REQUEST_MESSAGE_TYPE = "CLIENT_MESSAGE"
+import json
 
-MSG_TYPE_INDEX = 0
-COMMAND_INDEX = 1
-ARG_LIST_INDEX = 2
+from base import MSG_TYPE_KEY
+from base import BaseMessage
 
 
-class ClientRequestMessage(object):
-    def __init__(self, command, arg_list):
-        self._msg_type = CLIENT_REQUEST_MESSAGE_TYPE
+CLIENT_REQUEST_MESSAGE_TYPE = "CLIENT_REQUEST_MESSAGE"
+
+SRC_IP_ADDR_KEY = "scr_ip_addr"
+SRC_PORT_KEY = "src_port"
+COMMAND_KEY = "command"
+ARGS_LIST_KEY = "args_list"
+
+
+class ClientRequestMessage(BaseMessage):
+    def __init__(self, src_ip_addr, src_port, command, args_list):
+        self._src_ip_addr = src_ip_addr
+        self._src_port = src_port
+
+        self._dst_ip_addr = ""
+        self._dst_port = ""
+
         self._command = command
-        self._arg_list = arg_list
+        self._args_list = args_list
 
     def to_string(self):
-        arg_tokens = ""
-        for arg in self._arg_list:
-            arg_tokens += str(arg)
+        json_data = json.dump(
+            {
+                MSG_TYPE_KEY: CLIENT_REQUEST_MESSAGE_TYPE,
+                SRC_IP_ADDR_KEY: self._src_ip_addr,
+                SRC_PORT_KEY: self._src_port,
+                COMMAND_KEY: self._command,
+                ARGS_LIST_KEY: self._args_list
+           }
+        )
 
-        return "CLIENT_MESSAGE {0} {1}".format(self._command, arg_tokens)
-
-    @staticmethod
-    def from_string(message):
-        request_tokens = message.split()
-
-        command= request_tokens[COMMAND_INDEX]
-
-        arg_list_tokens = request_tokens[ARG_LIST_INDEX:]
-        arg_list = []
-
-        for arg_token in arg_list_tokens:
-            arg_list.append(int(arg_token))
-
-        return ClientRequestMessage(command, arg_list)
+        return "{0} {1}".format(CLIENT_REQUEST_MESSAGE_TYPE, json_data)
 
     @staticmethod
-    def from_client_command(client_command):
-        return ClientRequestMessage(client_command._command, client_command._arg_list)
+    def from_message_string(message):
+        json_data = json.load(message)
+
+        src_ip_addr = json_data[SRC_IP_ADDR_KEY]
+        src_port = json_data[SRC_PORT_KEY]
+        command = json_data[COMMAND_KEY]
+        args_list = json_data[ARGS_LIST_KEY]
+
+        return ClientRequestMessage(src_ip_addr, src_port, command, args_list)
 
     @staticmethod
     def is_client_message(message):
-        msg_tokens = message.split()
-        msg_type = msg_tokens[MSG_TYPE_INDEX]
+        json_data = json.load(message)
+
+        msg_type = json_data[MSG_TYPE_KEY]
 
         return msg_type == CLIENT_REQUEST_MESSAGE_TYPE
 

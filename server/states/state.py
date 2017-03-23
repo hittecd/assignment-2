@@ -1,7 +1,7 @@
 import random
 import time
 
-from ..messages.base import BaseMessage
+from ..messages.base_raft import BaseRaftMessage
 from ..messages.response import ResponseMessage
 
 
@@ -25,14 +25,14 @@ class State(object):
             self._send_response_message(message, yes=False)
             return self, None
 
-        if (_type == BaseMessage.AppendEntries):
+        if (_type == BaseRaftMessage.AppendEntries):
             return self.on_append_entries(message)
-        elif (_type == BaseMessage.RequestVote):
+        elif (_type == BaseRaftMessage.RequestVote):
             a = self.on_vote_request(message)
             return a
-        elif (_type == BaseMessage.RequestVoteResponse):
+        elif (_type == BaseRaftMessage.RequestVoteResponse):
             return self.on_vote_received(message)
-        elif (_type == BaseMessage.Response):
+        elif (_type == BaseRaftMessage.Response):
             return self.on_response_received(message)
 
     def on_leader_timeout(self, message):

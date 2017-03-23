@@ -1,6 +1,7 @@
 import socket
 
-from ..server.messages.client_request import ClientRequestMessage
+from server.messages.client_request import ClientRequestMessage
+
 
 Q_CREATE_COMMAND_STR = 'qcreate'
 Q_ID_COMMAND_STR = 'qid'
@@ -20,7 +21,7 @@ class FTQueueClient(object):
         while True:
             user_input = raw_input('> ')
 
-            command, err_msg = self.parse_command(user_input)
+            command, err_msg = self.parse_client_request(user_input)
 
             if command == None:
                 print "ERROR - " + err_msg
@@ -54,33 +55,33 @@ class FTQueueClient(object):
         print "   Q_TOP_COMMAND := \'qtop    (int queue_id)\'"
         print "  Q_SIZE_COMMAND := \'qsize   (int queue_id)\'"
 
-    def parse_command(self, user_input):
+    def parse_client_request(self, user_input):
         input_tokens = user_input.split()
 
         if len(input_tokens) < 3:
             return None, "invalid command: {0}".format(user_input)
 
-        ip_addr = input_tokens[0]
-        port = int(input_tokens[1])
+        dst_ip_addr = input_tokens[0]
+        dst_port = int(input_tokens[1])
         command_str = input_tokens[2].lower()
         args_list = input_tokens[3:]
 
-        if not self.validate_ip_token(ip_addr):
-            return None, "invalid ip address: {0}".format(ip_addr)
+        if not self.validate_dst_ip_addr(dst_ip_addr):
+            return None, "invalid ip address: {0}".format(dst_ip_addr)
 
-        if not self.validate_port_token(port):
-            return None, "invalid port number: {0}".format(port)
+        if not self.validate_dst_port(dst_port):
+            return None, "invalid port number: {0}".format(dst_port)
 
         if not self.validate_command_token(command_str, args_list):
             return None, "invalid command: {0} {1}".format(command_str, args_list)
 
-        return self.ClientCommand(ip_addr, port, command_str, args_list), None
+        return ClientRequestMessage(dst_ip_addr, dst_port, command_str, args_list), None
 
-    def validate_ip_token(self, ip_addr):
-        if ip_addr == '':
+    def validate_dst_ip_addr(self, dst_ip_addr):
+        if dst_ip_addr == '':
             return False
 
-        ip_octets = ip_addr.split('.')
+        ip_octets = dst_ip_addr.split('.')
         if len(ip_octets) != 4:
             return False
 
@@ -90,8 +91,8 @@ class FTQueueClient(object):
 
         return True
 
-    def validate_port_token(self, port):
-        if port < 0 or port > 65535:
+    def validate_dst_port(self, dst_port):
+        if dst_port < 0 or dst_port > 65535:
             return False
 
         return True
@@ -111,16 +112,6 @@ class FTQueueClient(object):
             return True
         else:
             return False
-
-    class ClientCommand(object):
-        def __init__(self, ip_addr, port, command, args_list):
-            self._ip_addr = ip_addr
-            self._port = port
-            self._command = command
-            self._args = args_list
-
-        def get_client_request(self):
-            return ClientRequestMessage.from_client_command(self)
 
 
 if __name__ == "__main__":
