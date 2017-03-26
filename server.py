@@ -10,7 +10,8 @@ SERVER_DIRECTORY = {}
 SERVER_INFO_NAME_INDEX = 0
 SERVER_INFO_LISTEN_PORT_INDEX = 1
 SERVER_INFO_IP_ADDR_INDEX = 2
-
+port_list = {8000:'No',8002:'No',8001:'No'}
+#ack_port = []
 
 class Server(object):
     def __init__(self, server_directory_index):
@@ -45,18 +46,68 @@ class Server(object):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind((self._ip_addr, self._listen_port))
-
         sock.listen(4)
+	if self._listen_port == 8000:
+		self._state = 'Master'
+	
         while True:
+	    #port_list = [8000,8001,8002,8003,8004]
+	    
+	    port_list[self._listen_port] = 'Yes'
+	    for i in port_list:
+		if port_list[i] != 'Yes':
+		    msg = "hello"
+		    try:
+                    	sock1= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    	serv_addr=('127.0.0.1',i)
+			sock1.connect(serv_addr)
+			sock1.sendall(msg)
+                    except socket.error as msg:
+                    	#print "ERROR - failed to bind to socket:"
+                    	sock1.close()
+                try:
+			print sock1
+                	response = sock1.recv(2048)
+			sock1.settimeout(2)
+                	print response
+			#sock1.close()
+			if response:
+				port_list[i] = 'Yes'
+				print port_list
+				
+		except:
+			print 'Error no response'
+		else:
+			continue
+		    
             conn, addr = sock.accept()  # spin off thread?
-            print "CONNECTION ADDRESS: {0}".format(addr)
+            #print "CONNECTION ADDRESS: {0}".format(addr)
 
             message = conn.recv(2048)
-
+	    sock.settimeout(None)
+	    #print conn.port()
+	    self._log.append(message)
+	    if self._state == 'Master':
+	    	for i in port_list:
+			if port_list[i] == 'Yes' and i != 8000:
+	    			if len(message) > 0:
+					try:
+                    				sock1= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	        				serv_addr=('127.0.0.1',i)
+						sock1.connect(serv_addr)
+						sock1.sendall(message)
+					except socket.error as msg:
+                    				#print "ERROR - failed to bind to socket:"
+                    				sock1.close()
+	    message = ''
+	    msg1 = "ack"
+	    conn.send(msg1)
+	    print self._log
+	    
             # process message here; either CLIENT, APPEND_ENTRIES, RESPONSE, or REQUEST_VOTE
 
 
-            self.on_message(message)
+            #self.on_message(message)
 
     def send_message(self, message):
         for n in self._neighbors:
